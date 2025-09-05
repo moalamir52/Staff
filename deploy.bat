@@ -1,6 +1,9 @@
 @echo off
 setlocal ENABLEEXTENSIONS
 
+REM Change to script directory
+cd /d "%~dp0"
+
 REM ##################################################################
 REM # Self-Fixing Ultimate All-in-One: Save & Deploy Script          #
 REM # Automatically handles 'safe.directory' issues.                 #
@@ -27,7 +30,7 @@ echo.
 
 REM Step 1.1: Automatically fix 'dubious ownership' issue
 echo  - Adding current directory to Git's safe list...
-git config --global --add safe.directory "%CD%"
+git config --global --add safe.directory "%~dp0"
 echo  - Done.
 
 REM Step 1.2: Configure Git Identity
