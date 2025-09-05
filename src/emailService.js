@@ -1,7 +1,7 @@
 // Email Service for Staff Management System (Frontend)
 // This file handles the browser-specific email functionality.
 
-import { generateEmailContent } from './emailGenerator';
+import { generateEmailContent } from './emailGenerator.js';
 
 // The main function that prepares and copies the content for the browser
 export const sendEmail = (type, employees) => {
