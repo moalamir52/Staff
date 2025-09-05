@@ -31,7 +31,7 @@ yarn-error.log*
 /src/services/
 /src/types/
 /public/vite.svg
-/index.html
+
 /tsconfig.json
 /.env
 /.env.example

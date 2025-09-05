@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import { sendEmail } from './emailService';
 
@@ -31,7 +31,7 @@ function App() {
     return result;
   };
 
-  const loadEmployeeData = async () => {
+  const loadEmployeeData = useCallback(async () => {
     setLoading(true);
     try {
       const csvUrl = 'https://docs.google.com/spreadsheets/d/1Fnr64ZBPhUoOJRY9CUr47rh6a_j-iHRmR37Jew9WdXo/export?format=csv&gid=323448096';
@@ -102,7 +102,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleSearch = (keyword) => {
     const searchKeyword = keyword.trim().toLowerCase();
@@ -184,9 +184,9 @@ function App() {
     XLSX.writeFile(wb, `Staff_Report_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
-  useEffect(() => {
+    useEffect(() => {
     loadEmployeeData();
-  }, []);
+  }, [loadEmployeeData]);
 
   const employeesToShow = getEmployeesToShow();
 

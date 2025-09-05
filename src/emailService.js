@@ -31,7 +31,7 @@ export const sendEmail = (type, employees) => {
   });
 
   // --- 2. Open mailto link (with a shorter body) ---
-  const recipient = 'burhan@iyelo.com'; // This can be moved to a config file
+  const recipient = 'M.ALAMIR@IYELO.COM'; // This can be moved to a config file
   const subject = encodeURIComponent(emailContent.subject);
   const mailtoBody = ""; // Body is left empty as it's in the clipboard
   const mailtoLink = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(mailtoBody)}`;

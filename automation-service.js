@@ -11,16 +11,16 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/1Fnr64ZBPhUoOJRY9CUr47rh
 
 // SMTP Configuration from environment variables
 const smtpConfig = {
-  host: process.env.VITE_EMAIL_HOST,
-  port: parseInt(process.env.VITE_EMAIL_PORT || '587', 10),
-  secure: parseInt(process.env.VITE_EMAIL_PORT || '587', 10) === 465, // true for 465, false for other ports
+  host: process.env.EMAIL_HOST,
+  port: parseInt(process.env.EMAIL_PORT || '587', 10),
+  secure: parseInt(process.env.EMAIL_PORT || '587', 10) === 465, // true for 465, false for other ports
   auth: {
-    user: process.env.VITE_EMAIL_USER,
-    pass: process.env.VITE_EMAIL_PASS,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 };
 
-const recipientEmail = process.env.VITE_NOTIFICATION_EMAIL;
+const recipientEmail = process.env.EMAIL_TO;
 
 // --- 2. DATA FETCHING AND PARSING ---
 
