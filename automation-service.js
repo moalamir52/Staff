@@ -151,4 +151,4 @@ console.log('The service is scheduled to run every day at 9:00 AM (Asia/Riyadh t
 console.log('To run an immediate test, you can uncomment the line below.');
 
 // For immediate testing:
-checkAndSendReport();
+// checkAndSendReport();
