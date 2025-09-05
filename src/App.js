@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
-import { sendEmail } from './emailService';
+import { sendEmail } from './emailService.js';
 
 function App() {
   const [employees, setEmployees] = useState([]);
