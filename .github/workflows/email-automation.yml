@@ -2,8 +2,8 @@ name: Staff Email Automation
 
 on:
   schedule:
-    # يعمل كل 5 دقائق للاختبار
-    - cron: '*/5 * * * *'
+    # يعمل كل يوم الساعة 3:00 مساءً UTC (7:00 مساءً دبي UTC+4)
+    - cron: '0 15 * * *'
   workflow_dispatch: # للتشغيل اليدوي
 
 jobs:
