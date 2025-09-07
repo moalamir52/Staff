@@ -1,0 +1,1 @@
+export const EMAIL_RECIPIENT = 'M.ALAMIR@IYELO.COM';

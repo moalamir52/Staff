@@ -1,17 +1,17 @@
-name: Daily Staff Residency Check
+name: Staff Email Automation
 
 on:
   schedule:
-    # Runs every day at 6:00 AM UTC (9:00 AM Dubai time)
-    - cron: '0 6 * * *'
-  workflow_dispatch: # Allows manual trigger
+    # يعمل كل 5 دقائق للاختبار
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # للتشغيل اليدوي
 
 jobs:
   send-email:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
       
     - name: Setup Node.js

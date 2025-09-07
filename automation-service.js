@@ -93,7 +93,7 @@ const sendNotificationEmail = async (subject, htmlBody) => {
     return;
   }
   if (!recipientEmail) {
-    console.error('Recipient email is not defined. Please check VITE_NOTIFICATION_EMAIL in your .env file.');
+    console.error('Recipient email is not defined. Please check EMAIL_TO in your .env file.');
     return;
   }
 
@@ -125,6 +125,13 @@ const checkAndSendReport = async () => {
     return;
   }
 
+  console.log(`Found ${employees.length} employees. Checking expiry dates...`);
+  
+  // Log some employee data for debugging
+  employees.slice(0, 3).forEach(emp => {
+    console.log(`Employee: ${emp.name}, Days until expiry: ${emp.daysUntilExpiry}`);
+  });
+
   // We want to send a report for employees expiring within 30 days
   const emailContent = generateEmailContent('urgent', employees);
 
@@ -133,22 +140,56 @@ const checkAndSendReport = async () => {
     await sendNotificationEmail(emailContent.subject, emailContent.body);
   } else {
     console.log('No employees with expiring residencies found. No email will be sent.');
+    // For testing purposes, let's send a test email anyway
+    console.log('Sending test email to verify email functionality...');
+    await sendNotificationEmail(
+      'Test Email - Staff Alert System', 
+      '<h2>Test Email</h2><p>This is a test email to verify the email system is working. Total employees processed: ' + employees.length + '</p>'
+    );
   }
 };
 
-// Schedule the task to run every day at 9:00 AM
-// For testing, you can use '* * * * *' to run it every minute
-cron.schedule('0 9 * * *', () => {
-  console.log('Cron job triggered!');
+// Check if running in GitHub Actions
+const isGitHubActions = process.env.GITHUB_ACTIONS === 'true';
+
+if (isGitHubActions) {
+  // GitHub Actions mode - run once and exit
+  console.log('🚀 Running in GitHub Actions mode...');
+  checkAndSendReport().then(() => {
+    console.log('✅ GitHub Actions job completed');
+    process.exit(0);
+  }).catch(error => {
+    console.error('❌ GitHub Actions job failed:', error);
+    process.exit(1);
+  });
+} else {
+  // Local mode - use cron scheduling
+  const cronJob = cron.schedule('0 9 * * *', () => {
+    console.log('\n🔔 Cron job triggered at:', new Date().toLocaleString('ar-EG', {timeZone: 'Asia/Riyadh'}));
+    checkAndSendReport();
+  }, {
+    scheduled: true,
+    timezone: "Asia/Riyadh"
+  });
+
+  console.log('📅 Cron job scheduled successfully!');
+  console.log('⏰ Next execution will be at 9:00 AM (Asia/Riyadh timezone)');
+  console.log('🔄 Current time:', new Date().toLocaleString('ar-EG', {timeZone: 'Asia/Riyadh'}));
+  console.log('\n✅ Automated Email Service has started.');
+  console.log('📧 Email Configuration:');
+  console.log('   Host:', smtpConfig.host);
+  console.log('   Port:', smtpConfig.port);
+  console.log('   User:', smtpConfig.auth.user);
+  console.log('   To:', recipientEmail);
+  console.log('\n🚀 Running immediate test...');
+  
   checkAndSendReport();
-}, {
-  scheduled: true,
-  timezone: "Asia/Riyadh" // Set to your timezone
-});
-
-console.log('✅ Automated Email Service has started.');
-console.log('The service is scheduled to run every day at 9:00 AM (Asia/Riyadh timezone).');
-console.log('To run an immediate test, you can uncomment the line below.');
-
-// For immediate testing:
-// checkAndSendReport();
+  
+  console.log('\n⏳ Service is now running and waiting for scheduled time...');
+  console.log('💡 To stop the service, press Ctrl+C');
+  
+  process.on('SIGINT', () => {
+    console.log('\n🛑 Service stopped by user');
+    process.exit(0);
+  });
+}

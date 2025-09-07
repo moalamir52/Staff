@@ -2,6 +2,7 @@
 // This file handles the browser-specific email functionality.
 
 import { generateEmailContent } from './emailGenerator.js';
+import { EMAIL_RECIPIENT } from './config.js';
 
 // The main function that prepares and copies the content for the browser
 export const sendEmail = (type, employees) => {
@@ -31,7 +32,7 @@ export const sendEmail = (type, employees) => {
   });
 
   // --- 2. Open mailto link (with a shorter body) ---
-  const recipient = 'M.ALAMIR@IYELO.COM'; // This can be moved to a config file
+  const recipient = EMAIL_RECIPIENT;
   const subject = encodeURIComponent(emailContent.subject);
   const mailtoBody = ""; // Body is left empty as it's in the clipboard
   const mailtoLink = `mailto:${recipient}?subject=${subject}&body=${encodeURIComponent(mailtoBody)}`;

@@ -184,9 +184,22 @@ function App() {
     XLSX.writeFile(wb, `Staff_Report_${new Date().toISOString().slice(0, 10)}.xlsx`);
   };
 
-    useEffect(() => {
+  useEffect(() => {
     loadEmployeeData();
   }, [loadEmployeeData]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showEmailDropdown && !event.target.closest('.email-dropdown-container')) {
+        setShowEmailDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showEmailDropdown]);
 
   const employeesToShow = getEmployeesToShow();
 
@@ -194,7 +207,8 @@ function App() {
     <div style={{
       minHeight: "100vh",
       background: "#FFF8E1",
-      fontFamily: "Tajawal, Arial, sans-serif"
+      fontFamily: "Tajawal, Arial, sans-serif",
+      fontSize: 18
     }}>
       {/* زر العودة */}
       <button
@@ -242,7 +256,8 @@ function App() {
         borderRadius: 18,
         boxShadow: "0 4px 24px #0001",
         padding: 24,
-        minHeight: 600
+        minHeight: "auto",
+        paddingBottom: 24
       }}>
         {/* شريط التحكم */}
         <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 18, flexWrap: "wrap" }}>
@@ -296,53 +311,9 @@ function App() {
           >
             Export
           </button>
-          <button
-            onClick={() => setView('all')}
-            style={{
-              background: view === 'all' ? "#FFD600" : "#fff",
-              color: view === 'all' ? "#222" : "#673ab7",
-              border: "2px solid #FFD600",
-              borderRadius: 8,
-              fontWeight: "bold",
-              fontSize: 16,
-              padding: "8px 18px",
-              cursor: "pointer"
-            }}
-          >
-            All Employees ({summary.total})
-          </button>
-          <button
-            onClick={() => setView('expiring')}
-            style={{
-              background: view === 'expiring' ? "#FF9800" : "#fff",
-              color: view === 'expiring' ? "white" : "#FF9800",
-              border: "2px solid #FF9800",
-              borderRadius: 8,
-              fontWeight: "bold",
-              fontSize: 16,
-              padding: "8px 18px",
-              cursor: "pointer"
-            }}
-          >
-            Expiring in 30 Days ({summary.expiring})
-          </button>
-          <button
-            onClick={() => setView('expired')}
-            style={{
-              background: view === 'expired' ? "#F44336" : "#fff",
-              color: view === 'expired' ? "white" : "#F44336",
-              border: "2px solid #F44336",
-              borderRadius: 8,
-              fontWeight: "bold",
-              fontSize: 16,
-              padding: "8px 18px",
-              cursor: "pointer"
-            }}
-          >
-            Expired ({summary.expired})
-          </button>
           
-          <div style={{ position: "relative", marginLeft: "auto" }}>
+          
+          <div className="email-dropdown-container" style={{ position: "relative", marginLeft: "auto" }}>
             <button
               onClick={() => setShowEmailDropdown(!showEmailDropdown)}
               style={{
@@ -387,7 +358,7 @@ function App() {
                     background: "transparent",
                     textAlign: "left",
                     cursor: "pointer",
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: "bold",
                     color: "#673ab7",
                     borderBottom: "1px solid #FFD600",
@@ -410,7 +381,7 @@ function App() {
                     background: "transparent",
                     textAlign: "left",
                     cursor: "pointer",
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: "bold",
                     color: "#673ab7",
                     borderBottom: "1px solid #FFD600"
@@ -432,7 +403,7 @@ function App() {
                     background: "transparent",
                     textAlign: "left",
                     cursor: "pointer",
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: "bold",
                     color: "#673ab7",
                     borderRadius: "0 0 9px 9px"
@@ -449,41 +420,50 @@ function App() {
 
         {/* بطاقات الملخص */}
         <div style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
-          <div style={{
-            background: "#FFF8E1",
-            border: "2px solid #FFD600",
-            borderRadius: 12,
-            padding: 20,
-            textAlign: "center",
-            minWidth: 150,
-            flex: 1
-          }}>
+          <div
+            onClick={() => setView('all')}
+            style={{
+              background: view === 'all' ? "#FFD600" : "#FFF8E1",
+              border: view === 'all' ? "2px solid #673ab7" : "2px solid #FFD600",
+              borderRadius: 12,
+              padding: 20,
+              textAlign: "center",
+              minWidth: 150,
+              flex: 1,
+              cursor: "pointer"
+            }}>
             <div style={{ fontSize: 32, fontWeight: "bold", color: "#673ab7" }}>{summary.total}</div>
             <div style={{ color: "#673ab7", fontWeight: "bold" }}>Total Employees</div>
           </div>
-          <div style={{
-            background: "#FFF3E0",
-            border: "2px solid #FF9800",
-            borderRadius: 12,
-            padding: 20,
-            textAlign: "center",
-            minWidth: 150,
-            flex: 1
-          }}>
-            <div style={{ fontSize: 32, fontWeight: "bold", color: "#E65100" }}>{summary.expiring}</div>
-            <div style={{ color: "#FF9800", fontWeight: "bold" }}>Expiring in 30 Days</div>
+          <div
+            onClick={() => setView('expiring')}
+            style={{
+              background: view === 'expiring' ? "#FF9800" : "#FFF3E0",
+              border: view === 'expiring' ? "2px solid #673ab7" : "2px solid #FF9800",
+              borderRadius: 12,
+              padding: 20,
+              textAlign: "center",
+              minWidth: 150,
+              flex: 1,
+              cursor: "pointer"
+            }}>
+            <div style={{ fontSize: 32, fontWeight: "bold", color: view === 'expiring' ? "white" : "#E65100" }}>{summary.expiring}</div>
+            <div style={{ color: view === 'expiring' ? "white" : "#FF9800", fontWeight: "bold" }}>Expiring in 30 Days</div>
           </div>
-          <div style={{
-            background: "#FFEBEE",
-            border: "2px solid #F44336",
-            borderRadius: 12,
-            padding: 20,
-            textAlign: "center",
-            minWidth: 150,
-            flex: 1
-          }}>
-            <div style={{ fontSize: 32, fontWeight: "bold", color: "#C62828" }}>{summary.expired}</div>
-            <div style={{ color: "#F44336", fontWeight: "bold" }}>Expired</div>
+          <div
+            onClick={() => setView('expired')}
+            style={{
+              background: view === 'expired' ? "#F44336" : "#FFEBEE",
+              border: view === 'expired' ? "2px solid #673ab7" : "2px solid #F44336",
+              borderRadius: 12,
+              padding: 20,
+              textAlign: "center",
+              minWidth: 150,
+              flex: 1,
+              cursor: "pointer"
+            }}>
+            <div style={{ fontSize: 32, fontWeight: "bold", color: view === 'expired' ? "white" : "#C62828" }}>{summary.expired}</div>
+            <div style={{ color: view === 'expired' ? "white" : "#F44336", fontWeight: "bold" }}>Expired</div>
           </div>
         </div>
 
@@ -495,21 +475,21 @@ function App() {
               borderCollapse: "collapse",
               marginTop: 15,
               boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-              fontSize: 13
+              fontSize: 16
             }}>
               <thead>
                 <tr style={{ background: "#673ab7", color: "white" }}>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>#</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Staff No.</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Passport Number</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Employee Name</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Job</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Nationality</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Card Type</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Card Number</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Card Expiry Date</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Days Remaining</th>
-                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd" }}>Status</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>#</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Staff No.</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Passport Number</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Employee Name</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Job</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Nationality</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Card Type</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Card Number</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Card Expiry Date</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Days Remaining</th>
+                  <th style={{ padding: "12px 8px", textAlign: "center", border: "1px solid #ddd", fontSize: 18 }}>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -662,12 +642,12 @@ function App() {
                   ].map(([label, value], index) => (
                     <div key={index} style={{
                       background: "white",
-                      padding: "8px 12px",
+                      padding: "4px 8px",
                       borderRadius: 6,
                       border: "2px solid #FFD600",
                       boxShadow: "0 2px 8px rgba(255, 214, 0, 0.1)"
                     }}>
-                      <div style={{ color: "#673ab7", fontWeight: "bold", fontSize: 13, marginBottom: 4 }}>{label}</div>
+                      <div style={{ color: "#673ab7", fontWeight: "bold", fontSize: 16, marginBottom: 4 }}>{label}</div>
                       <div style={{ color: "#333", fontSize: 16, fontWeight: "bold" }}>{value || 'N/A'}</div>
                     </div>
                   ))}
