@@ -1,28 +1,34 @@
 @echo off
 
-REM 1. Build the project
+echo ======================================================
+echo = 🚀 STARTING DEPLOYMENT...                    =
+echo ======================================================
+
+REM 1. Add and commit changes to main branch
+echo 📝 Committing changes to main branch...
+git add .
+git status
+set /p commit_msg="Enter commit message (or press Enter for default): "
+if "%commit_msg%"=="" set commit_msg=Update project files
+git commit -m "%commit_msg%"
+
+REM 2. Push to main branch
+echo 📤 Pushing to main branch...
+git push origin main
+
+REM 3. Build the project
+echo 🔨 Building project...
 call npm run build
 
-REM 2. Navigate into the build output directory
-cd build
-
-REM 3. Initialize a new git repository
-git init
-
-REM 4. Add and commit all files
-git add -A
-git commit -m "Deploy to GitHub Pages"
-
-REM 5. Push to the gh-pages branch
-git push -f https://github.com/moalamir52/Staff.git master:gh-pages
-
-REM 6. Navigate back to the project root and clean up
-cd ..
-rmdir /s /q build
+REM 4. Deploy to GitHub Pages
+echo 🌐 Deploying to GitHub Pages...
+call npm run deploy
 
 echo.
 echo ======================================================
-echo = 🚀 DEPLOYMENT COMPLETE!                      =
+echo = ✅ DEPLOYMENT COMPLETE!                      =
+echo = 📋 Main branch updated                       =
+echo = 🌐 GitHub Pages deployed                     =
 echo ======================================================
 echo.
 
