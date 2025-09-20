@@ -16,11 +16,17 @@ REM 2. Push to main branch
 echo 📤 Pushing to main branch...
 git push origin main
 
-REM 3. Build the project
+REM 3. Terminate Node.js processes
+echo.
+echo 🔪 Terminating any running Node.js processes...
+taskkill /F /IM node.exe /T >nul 2>&1
+echo.
+
+REM 4. Build the project
 echo 🔨 Building project...
 call npm run build
 
-REM 4. Deploy to GitHub Pages
+REM 5. Deploy to GitHub Pages
 echo 🌐 Deploying to GitHub Pages...
 call npm run deploy
 
